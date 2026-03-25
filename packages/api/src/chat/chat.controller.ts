@@ -12,22 +12,24 @@ export interface ChatResponse {
 }
 
 function detectDiagramType(inputs: string[]): DiagramType {
-  // TODO: refactor this to only check the most recent user message (last array item)
-  for (let i = inputs.length - 1; i >= 0; i--) {
-    const lowerCaseInput = inputs[i].toLowerCase();
-    if (lowerCaseInput.includes("sequence")) {
-      return "sequence";
-    }
-    if (lowerCaseInput.includes("flow")) {
-      return "branching";
-    }
-    if (
-      lowerCaseInput.includes("create") ||
-      lowerCaseInput.includes("generate") ||
-      lowerCaseInput.includes("diagram")
-    ) {
-      return "simple";
-    }
+  const latestInput = inputs.at(-1);
+  if (!latestInput) {
+    return "none";
+  }
+
+  const lowerCaseInput = latestInput.toLowerCase();
+  if (lowerCaseInput.includes("sequence")) {
+    return "sequence";
+  }
+  if (lowerCaseInput.includes("flow")) {
+    return "branching";
+  }
+  if (
+    lowerCaseInput.includes("create") ||
+    lowerCaseInput.includes("generate") ||
+    lowerCaseInput.includes("diagram")
+  ) {
+    return "simple";
   }
 
   return "none";
