@@ -1,18 +1,19 @@
 import { ChatAssistant } from "./components/ChatAssistant";
 import { DiagramWorkspace } from "./components/DiagramWorkspace";
+import styles from "./App.module.css";
 
 function App() {
   return (
-    <main className="app-shell">
+    <main className={styles.appShell}>
       <section
-        className="panel panel-chat"
+        className={`${styles.panel} ${styles.panelChat}`}
         aria-labelledby="chat-assistant-heading"
       >
         <ChatAssistant />
       </section>
 
       <section
-        className="panel panel-workspace"
+        className={styles.panel}
         aria-labelledby="diagram-workspace-heading"
       >
         <DiagramWorkspace />

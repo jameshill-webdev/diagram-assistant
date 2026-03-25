@@ -1,0 +1,21 @@
+.diagramWorkspace {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.diagramContainer {
+  flex: 1;
+  min-height: 16rem;
+  padding: 1rem;
+  border: 1px dashed #94a3b8;
+  border-radius: 1rem;
+  background: rgba(248, 250, 252, 0.9);
+}
+
+.diagramContainer p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.5;
+}
