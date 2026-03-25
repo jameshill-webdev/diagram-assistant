@@ -21,7 +21,7 @@ describe("handleChat", () => {
 
     handleChat(mockRequest);
 
-    expect(gptService.processChat).toHaveBeenCalledWith(mockRequest);
+    expect(gptService.processChat).toHaveBeenCalledWith(mockRequest, "none");
     expect(claudeService.processChat).not.toHaveBeenCalled();
   });
 
@@ -31,7 +31,7 @@ describe("handleChat", () => {
 
     handleChat(mockRequest);
 
-    expect(claudeService.processChat).toHaveBeenCalledWith(mockRequest);
+    expect(claudeService.processChat).toHaveBeenCalledWith(mockRequest, "none");
     expect(gptService.processChat).not.toHaveBeenCalled();
   });
 
@@ -40,7 +40,51 @@ describe("handleChat", () => {
 
     handleChat(mockRequest);
 
-    expect(gptService.processChat).toHaveBeenCalledWith(mockRequest);
+    expect(gptService.processChat).toHaveBeenCalledWith(mockRequest, "none");
     expect(claudeService.processChat).not.toHaveBeenCalled();
+  });
+
+  it("detects a sequence diagram request before calling GPT", async () => {
+    const { handleChat } = await import("./chat.controller.js");
+
+    handleChat({ input: ["create a sequence diagram"] });
+
+    expect(gptService.processChat).toHaveBeenCalledWith(
+      { input: ["create a sequence diagram"] },
+      "sequence",
+    );
+  });
+
+  it("detects a branching diagram request before calling GPT", async () => {
+    const { handleChat } = await import("./chat.controller.js");
+
+    handleChat({ input: ["show a flow chart"] });
+
+    expect(gptService.processChat).toHaveBeenCalledWith(
+      { input: ["show a flow chart"] },
+      "branching",
+    );
+  });
+
+  it("detects a simple diagram request before calling GPT", async () => {
+    const { handleChat } = await import("./chat.controller.js");
+
+    handleChat({ input: ["generate a diagram"] });
+
+    expect(gptService.processChat).toHaveBeenCalledWith(
+      { input: ["generate a diagram"] },
+      "simple",
+    );
+  });
+
+  it("uses newest-first matching when detecting the diagram type", async () => {
+    const { handleChat } = await import("./chat.controller.js");
+
+    handleChat({ input: ["create a diagram", "now a flow"] });
+
+    expect(gptService.processChat).toHaveBeenCalledWith(
+      { input: ["create a diagram", "now a flow"] },
+      "branching",
+    );
   });
 });

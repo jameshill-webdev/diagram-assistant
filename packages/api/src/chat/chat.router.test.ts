@@ -5,7 +5,7 @@ describe("POST /chat", () => {
   it("accepts an array of strings and returns diagram and message", async () => {
     const response = await request(app)
       .post("/chat")
-      .send({ messages: ["hello", "world"] });
+      .send({ input: ["hello", "world"] });
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("diagram");
