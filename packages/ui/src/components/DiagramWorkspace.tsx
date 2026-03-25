@@ -1,6 +1,10 @@
 import styles from "./DiagramWorkspace.module.css";
 
-export function DiagramWorkspace() {
+type DiagramWorkspaceProps = {
+  diagramMarkup: string;
+};
+
+export function DiagramWorkspace({ diagramMarkup }: DiagramWorkspaceProps) {
   return (
     <div className={styles.diagramWorkspace}>
       <div className="panel-header">
@@ -8,7 +12,11 @@ export function DiagramWorkspace() {
       </div>
 
       <div className={styles.diagramContainer}>
-        <p>Your diagram canvas will appear here.</p>
+        {diagramMarkup ? (
+          <pre>{diagramMarkup}</pre>
+        ) : (
+          <p>Your diagram canvas will appear here.</p>
+        )}
       </div>
     </div>
   );

@@ -1,14 +1,22 @@
-import { FormEvent, useState } from "react";
+import { FormEvent } from "react";
 import styles from "./ChatAssistant.module.css";
 
-type ConversationItem = {
+export type ConversationItem = {
   text: string;
   isUser: boolean;
 };
 
-export function ChatAssistant() {
-  const [conversation, setConversation] = useState<ConversationItem[]>([]);
+type ChatAssistantProps = {
+  conversation: ConversationItem[];
+  onSubmitMessage: (message: string) => void;
+  isSending: boolean;
+};
 
+export function ChatAssistant({
+  conversation,
+  onSubmitMessage,
+  isSending,
+}: ChatAssistantProps) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -20,10 +28,7 @@ export function ChatAssistant() {
       return;
     }
 
-    setConversation((currentConversation) => [
-      ...currentConversation,
-      { text: message, isUser: true },
-    ]);
+    onSubmitMessage(message);
     form.reset();
   };
 
@@ -63,9 +68,12 @@ export function ChatAssistant() {
           name="message"
           rows={6}
           placeholder="Describe the diagram you want to create..."
+          disabled={isSending}
         />
         <div className={styles.chatActions}>
-          <button type="submit">Send</button>
+          <button type="submit" disabled={isSending}>
+            {isSending ? "Sending..." : "Send"}
+          </button>
         </div>
       </form>
     </div>
