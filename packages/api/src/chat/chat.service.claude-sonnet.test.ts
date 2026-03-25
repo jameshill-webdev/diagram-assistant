@@ -14,7 +14,9 @@ describe("processChat (claude-sonnet service)", () => {
     it("returns the sequence diagram message", () => {
       const result = processChat({ input: ["SEQUENCE please"] }, "sequence");
       expect(result.diagram).toMatch(/^sequenceDiagram/);
-      expect(result.message).toBe("Here is your sequence diagram.");
+      expect(result.message).toBe(
+        "Here is your sequence diagram from Claude Sonnet.",
+      );
     });
   });
 
@@ -30,7 +32,9 @@ describe("processChat (claude-sonnet service)", () => {
     it("returns the branching flowchart message", () => {
       const result = processChat({ input: ["FLOW please"] }, "branching");
       expect(result.diagram).toMatch(/^flowchart TD/);
-      expect(result.message).toBe("Here is your branching flowchart.");
+      expect(result.message).toBe(
+        "Here is your branching flowchart from Claude Sonnet.",
+      );
     });
   });
 
@@ -43,7 +47,9 @@ describe("processChat (claude-sonnet service)", () => {
     it("returns the simple flowchart message", () => {
       const result = processChat({ input: ["GENERATE a chart"] }, "simple");
       expect(result.diagram).toMatch(/^flowchart LR/);
-      expect(result.message).toBe("Here is your flowchart.");
+      expect(result.message).toBe(
+        "Here is your simple flowchart from Claude Sonnet.",
+      );
     });
   });
 
@@ -51,7 +57,9 @@ describe("processChat (claude-sonnet service)", () => {
     it("returns an empty diagram when the controller passes 'none'", () => {
       const result = processChat({ input: ["hello there"] }, "none");
       expect(result.diagram).toBe("");
-      expect(result.message).toBe("No diagram type detected.");
+      expect(result.message).toBe(
+        "No diagram type detected from Claude Sonnet.",
+      );
     });
 
     it("returns an empty diagram even when request input is empty", () => {
