@@ -12,6 +12,7 @@ type ChatApiResponse = {
 function App() {
   const [conversation, setConversation] = useState<ConversationItem[]>([]);
   const [diagramMarkup, setDiagramMarkup] = useState("");
+  const [diagrams, setDiagrams] = useState<string[]>([]);
   const [isSending, setIsSending] = useState(false);
 
   const handleSubmitMessage = async (message: string) => {
@@ -33,6 +34,7 @@ function App() {
         },
         body: JSON.stringify({
           input: nextConversation.map((item) => item.text),
+          diagrams: diagrams,
         }),
       });
 
@@ -46,6 +48,11 @@ function App() {
         ...currentConversation,
         { text: data.message, isUser: false },
       ]);
+
+      // Add diagram to history array if it's not empty
+      if (data.diagram) {
+        setDiagrams((currentDiagrams) => [...currentDiagrams, data.diagram]);
+      }
       setDiagramMarkup(data.diagram);
     } catch {
       setConversation((currentConversation) => [

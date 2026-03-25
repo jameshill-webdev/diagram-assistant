@@ -73,7 +73,7 @@ describe("App", () => {
       "/chat",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ input: ["First user message"] }),
+        body: JSON.stringify({ input: ["First user message"], diagrams: [] }),
       }),
     );
 
@@ -101,6 +101,7 @@ describe("App", () => {
             "Assistant response one",
             "Second user message",
           ],
+          diagrams: ["graph TD; A-->B"],
         }),
       }),
     );

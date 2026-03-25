@@ -2,7 +2,7 @@ import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as gptService from "./chat.service.gpt.js";
 import * as claudeService from "./chat.service.claude-sonnet.js";
 
-const mockRequest = { input: ["hello"] };
+const mockRequest = { input: ["hello"], diagrams: [] };
 
 describe("handleChat", () => {
   beforeEach(() => {

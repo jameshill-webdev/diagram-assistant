@@ -4,6 +4,7 @@ import type { DiagramType } from "./chat.types.js";
 
 export interface ChatRequest {
   input: string[];
+  diagrams: string[];
 }
 
 export interface ChatResponse {
