@@ -1,10 +1,27 @@
+import { useEffect, useId, useRef } from "react";
+import mermaid from "mermaid";
 import styles from "./DiagramWorkspace.module.css";
+
+mermaid.initialize({ startOnLoad: false });
 
 type DiagramWorkspaceProps = {
   diagramMarkup: string;
 };
 
 export function DiagramWorkspace({ diagramMarkup }: DiagramWorkspaceProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const rawId = useId();
+  const diagramId = `mermaid-${rawId.replace(/:/g, "")}`;
+
+  useEffect(() => {
+    if (!diagramMarkup || !containerRef.current) return;
+    mermaid.render(diagramId, diagramMarkup).then(({ svg }) => {
+      if (containerRef.current) {
+        containerRef.current.innerHTML = svg;
+      }
+    });
+  }, [diagramMarkup, diagramId]);
+
   return (
     <div className={styles.diagramWorkspace}>
       <div className="panel-header">
@@ -13,7 +30,7 @@ export function DiagramWorkspace({ diagramMarkup }: DiagramWorkspaceProps) {
 
       <div className={styles.diagramContainer}>
         {diagramMarkup ? (
-          <pre>{diagramMarkup}</pre>
+          <div ref={containerRef} role="img" aria-label="mermaid diagram" />
         ) : (
           <p>Your diagram canvas will appear here.</p>
         )}

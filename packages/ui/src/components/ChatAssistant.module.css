@@ -21,6 +21,20 @@
   line-height: 1.5;
 }
 
+.chatOutput ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.chatOutput li {
+  margin-bottom: 0.5rem;
+}
+
+.chatOutput .source {
+  font-weight: 700;
+}
+
 .chatInput {
   display: flex;
   flex-direction: column;

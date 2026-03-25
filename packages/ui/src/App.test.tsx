@@ -1,5 +1,15 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import App from "./App";
+import { vi } from "vitest";
+
+vi.mock("mermaid", () => ({
+  default: {
+    initialize: vi.fn(),
+    render: vi
+      .fn()
+      .mockResolvedValue({ svg: "<svg><text>rendered</text></svg>" }),
+  },
+}));
 
 describe("App", () => {
   const fetchMock = vi.fn();
@@ -69,7 +79,9 @@ describe("App", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Assistant response one")).toBeInTheDocument();
-      expect(screen.getByText("graph TD; A-->B")).toBeInTheDocument();
+      expect(
+        screen.getByRole("img", { name: /mermaid diagram/i }),
+      ).toBeInTheDocument();
     });
 
     fireEvent.change(messageInput, {
@@ -95,7 +107,9 @@ describe("App", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Assistant response two")).toBeInTheDocument();
-      expect(screen.getByText("graph TD; B-->C")).toBeInTheDocument();
+      expect(
+        screen.getByRole("img", { name: /mermaid diagram/i }),
+      ).toBeInTheDocument();
     });
   });
 });

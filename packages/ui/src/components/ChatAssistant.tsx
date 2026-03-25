@@ -48,7 +48,12 @@ export function ChatAssistant({
           <ul>
             {conversation.map((item, index) => (
               <li key={`${index}-${item.text}`}>
-                {item.isUser ? <span>User:</span> : null} {item.text}
+                {item.isUser ? (
+                  <span className={styles.source}>User:</span>
+                ) : (
+                  <span className={styles.source}>Agent:</span>
+                )}{" "}
+                {item.text}
               </li>
             ))}
           </ul>
