@@ -1,3 +1,6 @@
+import { processChat as processChatGpt } from "./chat.service.gpt.js";
+import { processChat as processChatClaudeSonnet } from "./chat.service.claude-sonnet.js";
+
 export interface ChatRequest {
   input: string[];
 }
@@ -8,11 +11,11 @@ export interface ChatResponse {
 }
 
 export function handleChat(body: ChatRequest): ChatResponse {
-  const input = body.input || [];
+  const model = process.env.CHAT_MODEL;
 
-  // Return hardcoded response for now
-  return {
-    diagram: "Sample diagram",
-    message: "Hello from chat endpoint",
-  };
+  if (model === "claude-sonnet") {
+    return processChatClaudeSonnet(body);
+  }
+
+  return processChatGpt(body);
 }
