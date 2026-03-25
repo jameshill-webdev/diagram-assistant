@@ -1,9 +1,10 @@
 import express from "express";
+import chatRouter from "./chat/chat.router.js";
 
 const app = express();
 
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
-});
+app.use(express.json());
+
+app.use("/chat", chatRouter);
 
 export default app;
