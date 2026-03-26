@@ -1,4 +1,4 @@
-.appShell {
+.twoColumnLayout {
   display: grid;
   grid-template-columns: minmax(18rem, 1fr) minmax(0, 2fr);
   gap: 1.5rem;
@@ -22,14 +22,21 @@
   gap: 1rem;
 }
 
+.error {
+  color: #d00;
+  padding: 1.5rem;
+  padding-bottom: 0;
+  margin: 0;
+}
+
 @media (max-width: 900px) {
-  .appShell {
+  .twoColumnLayout {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 640px) {
-  .appShell {
+  .twoColumnLayout {
     padding: 1rem;
   }
 

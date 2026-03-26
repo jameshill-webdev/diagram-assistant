@@ -47,10 +47,10 @@ describe("handleChat", () => {
   it("detects a sequence diagram request before calling GPT", async () => {
     const { handleChat } = await import("./chat.controller.js");
 
-    handleChat({ input: ["create a sequence diagram"] });
+    handleChat({ input: ["create a sequence diagram"], diagrams: [] });
 
     expect(gptService.processChat).toHaveBeenCalledWith(
-      { input: ["create a sequence diagram"] },
+      { input: ["create a sequence diagram"], diagrams: [] },
       "sequence",
     );
   });
@@ -58,10 +58,10 @@ describe("handleChat", () => {
   it("detects a branching diagram request before calling GPT", async () => {
     const { handleChat } = await import("./chat.controller.js");
 
-    handleChat({ input: ["show a flow chart"] });
+    handleChat({ input: ["show a flow chart"], diagrams: [] });
 
     expect(gptService.processChat).toHaveBeenCalledWith(
-      { input: ["show a flow chart"] },
+      { input: ["show a flow chart"], diagrams: [] },
       "branching",
     );
   });
@@ -69,10 +69,10 @@ describe("handleChat", () => {
   it("detects a simple diagram request before calling GPT", async () => {
     const { handleChat } = await import("./chat.controller.js");
 
-    handleChat({ input: ["generate a diagram"] });
+    handleChat({ input: ["generate a diagram"], diagrams: [] });
 
     expect(gptService.processChat).toHaveBeenCalledWith(
-      { input: ["generate a diagram"] },
+      { input: ["generate a diagram"], diagrams: [] },
       "simple",
     );
   });
@@ -80,10 +80,10 @@ describe("handleChat", () => {
   it("uses newest-first matching when detecting the diagram type", async () => {
     const { handleChat } = await import("./chat.controller.js");
 
-    handleChat({ input: ["create a diagram", "now a flow"] });
+    handleChat({ input: ["create a diagram", "now a flow"], diagrams: [] });
 
     expect(gptService.processChat).toHaveBeenCalledWith(
-      { input: ["create a diagram", "now a flow"] },
+      { input: ["create a diagram", "now a flow"], diagrams: [] },
       "branching",
     );
   });
@@ -91,10 +91,13 @@ describe("handleChat", () => {
   it("only checks the most recent message when detecting the diagram type", async () => {
     const { handleChat } = await import("./chat.controller.js");
 
-    handleChat({ input: ["create a sequence diagram", "thanks!"] });
+    handleChat({
+      input: ["create a sequence diagram", "thanks!"],
+      diagrams: [],
+    });
 
     expect(gptService.processChat).toHaveBeenCalledWith(
-      { input: ["create a sequence diagram", "thanks!"] },
+      { input: ["create a sequence diagram", "thanks!"], diagrams: [] },
       "none",
     );
   });

@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import App from "./App";
 import { vi } from "vitest";
 
@@ -112,5 +118,32 @@ describe("App", () => {
         screen.getByRole("img", { name: /mermaid diagram/i }),
       ).toBeInTheDocument();
     });
+  });
+
+  it("shows request errors in a dedicated alert element", async () => {
+    fetchMock.mockRejectedValueOnce(new Error("There was a problem"));
+
+    render(<App />);
+
+    const messageInput = screen.getByLabelText(/message/i);
+    const inputForm = screen.getByRole("form", {
+      name: /chat assistant input/i,
+    });
+
+    fireEvent.change(messageInput, { target: { value: "Please help" } });
+    fireEvent.submit(inputForm);
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "Could not reach the assistant. There was a problem",
+      );
+    });
+
+    const chatOutput = screen.getByText(/user:/i).closest("div");
+    expect(chatOutput).not.toBeNull();
+    expect(
+      within(chatOutput as HTMLElement).getAllByRole("listitem"),
+    ).toHaveLength(1);
   });
 });
