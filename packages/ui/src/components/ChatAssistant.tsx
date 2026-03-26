@@ -1,4 +1,4 @@
-import { FormEvent } from "react";
+import { SubmitEvent } from "react";
 import styles from "./ChatAssistant.module.css";
 
 export type ConversationItem = {
@@ -17,7 +17,7 @@ export function ChatAssistant({
   onSubmitMessage,
   isSending,
 }: ChatAssistantProps) {
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const form = event.currentTarget;
@@ -35,14 +35,13 @@ export function ChatAssistant({
   return (
     <div className={styles.chatAssistant}>
       <div className="panel-header">
-        <h1 id="chat-assistant-heading">Chat Assistant</h1>
+        <h2 id="chat-assistant-heading">Chat Assistant</h2>
       </div>
-
       <div className={styles.chatOutput} aria-live="polite">
         {conversation.length === 0 ? (
           <p>
-            No messages yet. Ask the assistant to help build or refine a
-            diagram.
+            Ask the assistant to create a diagram, such as a flowchart or
+            sequence diagram.
           </p>
         ) : (
           <ul>
@@ -51,7 +50,7 @@ export function ChatAssistant({
                 {item.isUser ? (
                   <span className={styles.source}>User:</span>
                 ) : (
-                  <span className={styles.source}>Agent:</span>
+                  <span className={styles.source}>Assistant:</span>
                 )}{" "}
                 {item.text}
               </li>
@@ -59,7 +58,6 @@ export function ChatAssistant({
           </ul>
         )}
       </div>
-
       <form
         className={styles.chatInput}
         aria-label="Chat assistant input"

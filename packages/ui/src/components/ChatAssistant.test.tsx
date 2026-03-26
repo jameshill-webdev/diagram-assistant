@@ -16,7 +16,9 @@ describe("ChatAssistant", () => {
       screen.getByRole("heading", { name: /chat assistant/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/no messages yet\. ask the assistant/i),
+      screen.getByText(
+        /ask the assistant to create a diagram, such as a flowchart or sequence diagram\./i,
+      ),
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/message/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /send/i })).toBeInTheDocument();
@@ -53,7 +55,9 @@ describe("ChatAssistant", () => {
     expect(listItems[1]).toHaveTextContent("Assistant reply");
     expect(screen.getAllByText("User:", { selector: "span" })).toHaveLength(1);
     expect(
-      screen.queryByText(/no messages yet\. ask the assistant/i),
+      screen.queryByText(
+        /ask the assistant to create a diagram, such as a flowchart or sequence diagram\./i,
+      ),
     ).not.toBeInTheDocument();
     expect(onSubmitMessage).toHaveBeenCalledTimes(1);
     expect(onSubmitMessage).toHaveBeenCalledWith("New user message");

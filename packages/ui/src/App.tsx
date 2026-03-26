@@ -20,8 +20,8 @@ function App() {
       return;
     }
 
-    const userEntry: ConversationItem = { text: message, isUser: true };
-    const nextConversation = [...conversation, userEntry];
+    const userMessage: ConversationItem = { text: message, isUser: true };
+    const nextConversation = [...conversation, userMessage];
 
     setConversation(nextConversation);
     setErrorMessage("");
@@ -34,7 +34,9 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          input: nextConversation.map((item) => item.text),
+          input: nextConversation.map(
+            (item) => `${item.isUser ? "User: " : "Assistant: "}${item.text}`,
+          ),
           diagrams: diagrams,
         }),
       });
@@ -43,15 +45,18 @@ function App() {
         throw new Error(`Request failed with status ${response.status}`);
       }
 
-      const data = (await response.json()) as ChatApiResponse;
+      const responseData = (await response.json()) as ChatApiResponse;
 
       setConversation((currentConversation) => [
         ...currentConversation,
-        { text: data.message, isUser: false },
+        { text: responseData.message, isUser: false },
       ]);
 
-      if (data.diagram) {
-        setDiagrams((currentDiagrams) => [...currentDiagrams, data.diagram]);
+      if (responseData.diagram) {
+        setDiagrams((currentDiagrams) => [
+          ...currentDiagrams,
+          responseData.diagram,
+        ]);
       }
     } catch (error) {
       const detail =
@@ -67,6 +72,7 @@ function App() {
 
   return (
     <main>
+      <h1 className={styles.srOnly}>Diagram Assistant</h1>
       {errorMessage ? (
         <section>
           <p role="alert" id="error" className={styles.error}>

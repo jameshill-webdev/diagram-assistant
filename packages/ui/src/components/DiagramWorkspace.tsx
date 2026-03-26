@@ -14,7 +14,10 @@ export function DiagramWorkspace({ diagramMarkup }: DiagramWorkspaceProps) {
   const diagramId = `mermaid-${rawId.replace(/:/g, "")}`;
 
   useEffect(() => {
-    if (!diagramMarkup || !containerRef.current) return;
+    if (!diagramMarkup || !containerRef.current) {
+      return;
+    }
+
     mermaid.render(diagramId, diagramMarkup).then(({ svg }) => {
       if (containerRef.current) {
         containerRef.current.innerHTML = svg;
