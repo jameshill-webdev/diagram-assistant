@@ -3,83 +3,88 @@ import { processChat } from "./chat.service.claude-sonnet.js";
 
 describe("processChat (claude-sonnet service)", () => {
   describe("sequence diagram", () => {
-    it("returns a sequence diagram when the controller passes 'sequence'", () => {
-      const result = processChat(
-        { input: ["create a sequence diagram"], diagrams: [] },
-        "sequence",
-      );
-      expect(result.diagram).toMatch(/^sequenceDiagram/);
-    });
+    it("returns a generateDiagram tool call for sequence requests", () => {
+      const result = processChat({
+        input: ["create a sequence diagram"],
+        diagrams: [],
+      });
 
-    it("returns the sequence diagram message", () => {
-      const result = processChat(
-        { input: ["SEQUENCE please"], diagrams: [] },
-        "sequence",
-      );
-      expect(result.diagram).toMatch(/^sequenceDiagram/);
-      expect(result.message).toBe(
-        "Here is your sequence diagram from Claude Sonnet.",
-      );
+      expect(result).toEqual({
+        type: "tool_call",
+        responseMessage: "Here is your sequence diagram from Claude Sonnet.",
+        toolCall: {
+          toolName: "generateDiagram",
+          args: {
+            diagramType: "sequence",
+            prompt: "create a sequence diagram",
+          },
+        },
+      });
     });
   });
 
   describe("branching flowchart", () => {
-    it("returns a branching flowchart when the controller passes 'branching'", () => {
-      const result = processChat(
-        { input: ["show me a flow chart"], diagrams: [] },
-        "branching",
-      );
-      expect(result.diagram).toMatch(/^flowchart TD/);
-    });
+    it("returns a generateDiagram tool call for branching requests", () => {
+      const result = processChat({
+        input: ["show me a flow chart"],
+        diagrams: [],
+      });
 
-    it("returns the branching flowchart message", () => {
-      const result = processChat(
-        { input: ["FLOW please"], diagrams: [] },
-        "branching",
-      );
-      expect(result.diagram).toMatch(/^flowchart TD/);
-      expect(result.message).toBe(
-        "Here is your branching flowchart from Claude Sonnet.",
-      );
+      expect(result).toEqual({
+        type: "tool_call",
+        responseMessage: "Here is your branching flowchart from Claude Sonnet.",
+        toolCall: {
+          toolName: "generateDiagram",
+          args: {
+            diagramType: "branching",
+            prompt: "show me a flow chart",
+          },
+        },
+      });
     });
   });
 
   describe("simple flowchart", () => {
-    it("returns a simple flowchart when the controller passes 'simple'", () => {
-      const result = processChat(
-        { input: ["create something"], diagrams: [] },
-        "simple",
-      );
-      expect(result.diagram).toMatch(/^flowchart LR/);
-    });
+    it("returns a generateDiagram tool call for simple requests", () => {
+      const result = processChat({
+        input: ["GENERATE a chart"],
+        diagrams: [],
+      });
 
-    it("returns the simple flowchart message", () => {
-      const result = processChat(
-        { input: ["GENERATE a chart"], diagrams: [] },
-        "simple",
-      );
-      expect(result.diagram).toMatch(/^flowchart LR/);
-      expect(result.message).toBe(
-        "Here is your simple flowchart from Claude Sonnet.",
-      );
+      expect(result).toEqual({
+        type: "tool_call",
+        responseMessage: "Here is your simple flowchart from Claude Sonnet.",
+        toolCall: {
+          toolName: "generateDiagram",
+          args: {
+            diagramType: "simple",
+            prompt: "GENERATE a chart",
+          },
+        },
+      });
     });
   });
 
   describe("no match fallback", () => {
-    it("returns an empty diagram when the controller passes 'none'", () => {
-      const result = processChat(
-        { input: ["hello there"], diagrams: [] },
-        "none",
-      );
-      expect(result.diagram).toBe("");
-      expect(result.message).toBe(
-        "No diagram type detected from Claude Sonnet.",
-      );
+    it("returns a text decision when no diagram type is detected", () => {
+      const result = processChat({ input: ["hello there"], diagrams: [] });
+
+      expect(result).toEqual({
+        type: "text",
+        responseMessage: "No diagram type detected from Claude Sonnet.",
+      });
     });
 
-    it("returns an empty diagram even when request input is empty", () => {
-      const result = processChat({ input: [], diagrams: [] }, "none");
-      expect(result.diagram).toBe("");
+    it("only checks the most recent message when detecting a diagram request", () => {
+      const result = processChat({
+        input: ["create a sequence diagram", "thanks!"],
+        diagrams: [],
+      });
+
+      expect(result).toEqual({
+        type: "text",
+        responseMessage: "No diagram type detected from Claude Sonnet.",
+      });
     });
   });
 });

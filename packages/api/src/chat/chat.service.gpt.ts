@@ -1,43 +1,79 @@
-import type { ChatRequest, ChatResponse } from "./chat.controller.js";
-import type { DiagramType } from "./chat.types.js";
+import type {
+  ChatRequest,
+  DetectedDiagramType,
+  ProviderDecision,
+} from "./chat.types.js";
 
-const SEQUENCE_DIAGRAM = `sequenceDiagram
-    Alice->>Bob: Hello Bob, how are you?
-    Bob-->>Alice: I am good, thanks!
-    Alice->>Bob: Great to hear!`;
+function detectDiagramType(inputs: string[]): DetectedDiagramType {
+  const latestInput = inputs.at(-1);
+  if (!latestInput) {
+    return "none";
+  }
 
-const BRANCHING_FLOWCHART = `flowchart TD
-    A[Start] --> B{Is it?}
-    B -- Yes --> C[OK]
-    C --> D[Rethink]
-    D --> B
-    B -- No --> E[End]`;
+  const lowerCaseInput = latestInput.toLowerCase();
+  if (lowerCaseInput.includes("sequence")) {
+    return "sequence";
+  }
+  if (lowerCaseInput.includes("flow")) {
+    return "branching";
+  }
+  if (
+    lowerCaseInput.includes("create") ||
+    lowerCaseInput.includes("generate") ||
+    lowerCaseInput.includes("diagram")
+  ) {
+    return "simple";
+  }
 
-const SIMPLE_FLOWCHART = `flowchart LR
-    A[Start] --> B[Do something]
-    B --> C[End]`;
+  return "none";
+}
 
-export function processChat(
-  _body: ChatRequest,
-  diagramType: DiagramType,
-): ChatResponse {
+export function processChat(body: ChatRequest): ProviderDecision {
+  const latestInput = body.input.at(-1) ?? "";
+  const diagramType = detectDiagramType(body.input);
+
   if (diagramType === "sequence") {
     return {
-      diagram: SEQUENCE_DIAGRAM,
-      message: "Here is your sequence diagram from GPT.",
+      type: "tool_call",
+      responseMessage: "Here is your sequence diagram from GPT.",
+      toolCall: {
+        toolName: "generateDiagram",
+        args: {
+          diagramType,
+          prompt: latestInput,
+        },
+      },
     };
   }
   if (diagramType === "branching") {
     return {
-      diagram: BRANCHING_FLOWCHART,
-      message: "Here is your branching flowchart from GPT.",
+      type: "tool_call",
+      responseMessage: "Here is your branching flowchart from GPT.",
+      toolCall: {
+        toolName: "generateDiagram",
+        args: {
+          diagramType,
+          prompt: latestInput,
+        },
+      },
     };
   }
   if (diagramType === "simple") {
     return {
-      diagram: SIMPLE_FLOWCHART,
-      message: "Here is your simple flowchart from GPT.",
+      type: "tool_call",
+      responseMessage: "Here is your simple flowchart from GPT.",
+      toolCall: {
+        toolName: "generateDiagram",
+        args: {
+          diagramType,
+          prompt: latestInput,
+        },
+      },
     };
   }
-  return { diagram: "", message: "No diagram type detected from GPT." };
+
+  return {
+    type: "text",
+    responseMessage: "No diagram type detected from GPT.",
+  };
 }
